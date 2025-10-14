@@ -19,7 +19,7 @@ export async function explainCommand(userPrompt: string): Promise<void> {
     const environment = await getEnvironmentContext();
 
     logger.debug("Explain mode: Generating command...");
-    const command = await generateCommand(
+    const commandResponse = await generateCommand(
       userPrompt,
       environment,
       apiKey
@@ -39,14 +39,16 @@ export async function explainCommand(userPrompt: string): Promise<void> {
   Working Directory: ${environment.cwd}
   Running as root: ${environment.isRoot ? 'Yes' : 'No'}
 
-🤖 Generated Command:
-  ${command}
+🤖 Generated Response:
+  ${commandResponse.command}
 
-💡 What this command does:
-  ${getCommandExplanation(command)}
+📊 Executable: ${commandResponse.executable ? 'Yes' : 'No'}
+
+💡 What this response does:
+  ${getCommandExplanation(commandResponse.command)}
 
 ⚠️  Safety Notes:
-  ${getSafetyNotes(command)}
+  ${getSafetyNotes(commandResponse.command)}
 
 🔧 To execute this command:
   bob "${userPrompt}"

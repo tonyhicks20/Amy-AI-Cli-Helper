@@ -26,14 +26,14 @@ export async function run(userPrompt: string, options: RunOptions = {}): Promise
     logger.debug("Environment context retrieved", environment);
 
     logger.debug("Generating command...");
-    const command = await generateCommand(
+    const commandResponse = await generateCommand(
       userPrompt,
       environment,
       apiKey
     );
-    logger.debug("Command generated", { command });
+    logger.debug("Command generated", { command: commandResponse.command, executable: commandResponse.executable });
 
-    await executeWithConfirmation(command, options.force);
+    await executeWithConfirmation(commandResponse, options.force);
   } catch (error) {
     const logger = initializeLogger();
     logger.error("Error details", error);

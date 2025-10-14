@@ -2,6 +2,7 @@ import { exec } from "child_process";
 import { promisify } from "util";
 import readline from "readline/promises";
 import { log } from "./logger.js";
+import { CommandResponse } from "./generator.js";
 
 const execAsync = promisify(exec);
 
@@ -13,10 +14,17 @@ export interface ExecutionResult {
 }
 
 export async function executeWithConfirmation(
-  command: string,
+  commandResponse: CommandResponse,
   force: boolean = false
 ): Promise<ExecutionResult | null> {
-  log.command(`Generated command:\n  ${command}`);
+  log.command(`Generated command:\n  ${commandResponse.command}`);
+
+  // Check if command is executable
+  if (!commandResponse.executable) {
+    log.info("This is not an executable command. Displaying response:");
+    console.log(commandResponse.command);
+    return { success: true, stdout: commandResponse.command };
+  }
 
   if (!force) {
     const confirmed = await confirmExecution();
@@ -26,7 +34,7 @@ export async function executeWithConfirmation(
     }
   }
 
-  return await runCommand(command);
+  return await runCommand(commandResponse.command);
 }
 
 async function confirmExecution(): Promise<boolean> {
