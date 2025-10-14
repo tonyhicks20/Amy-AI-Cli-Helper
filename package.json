@@ -1,0 +1,40 @@
+{
+  "name": "bob",
+  "version": "1.0.0",
+  "description": "A CLI tool that converts natural language commands into executable shell commands using AI",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "bob": "./dist/bin/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx bin/cli.ts",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "ai",
+    "shell",
+    "command",
+    "openai",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "openai": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.7.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3"
+  }
+}
