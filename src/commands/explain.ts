@@ -18,11 +18,12 @@ export async function explainCommand(userPrompt: string): Promise<void> {
     logger.debug("Explain mode: Getting environment context...");
     const environment = await getEnvironmentContext();
 
-    logger.debug("Explain mode: Generating command...");
+    logger.debug("Explain mode: Generating command with explanation...");
     const commandResponse = await generateCommand(
       userPrompt,
       environment,
-      apiKey
+      apiKey,
+      true // Request explanation
     );
 
     // Display the explanation
@@ -39,16 +40,13 @@ export async function explainCommand(userPrompt: string): Promise<void> {
   Working Directory: ${environment.cwd}
   Running as root: ${environment.isRoot ? 'Yes' : 'No'}
 
-🤖 Generated Response:
+🤖 Generated Command:
   ${commandResponse.command}
 
 📊 Executable: ${commandResponse.executable ? 'Yes' : 'No'}
 
-💡 What this response does:
-  ${getCommandExplanation(commandResponse.command)}
-
-⚠️  Safety Notes:
-  ${getSafetyNotes(commandResponse.command)}
+💡 AI-Generated Explanation:
+  ${commandResponse.explanation || 'No explanation available'}
 
 🔧 To execute this command:
   bob "${userPrompt}"
@@ -63,99 +61,4 @@ export async function explainCommand(userPrompt: string): Promise<void> {
     console.error(`❌ Failed to explain command: ${errorMessage}`);
     process.exit(1);
   }
-}
-
-function getCommandExplanation(command: string): string {
-  const cmd = command.toLowerCase().trim();
-
-  if (cmd.startsWith('ls')) {
-    return "Lists files and directories in the current location";
-  } else if (cmd.startsWith('find')) {
-    return "Searches for files or directories matching specified criteria";
-  } else if (cmd.includes('kill') || cmd.includes('pkill')) {
-    return "Terminates running processes";
-  } else if (cmd.startsWith('ps')) {
-    return "Shows information about running processes";
-  } else if (cmd.startsWith('df')) {
-    return "Displays disk space usage";
-  } else if (cmd.startsWith('du')) {
-    return "Shows disk usage of files and directories";
-  } else if (cmd.startsWith('grep')) {
-    return "Searches for text patterns in files";
-  } else if (cmd.startsWith('cat')) {
-    return "Displays the contents of files";
-  } else if (cmd.startsWith('mkdir')) {
-    return "Creates new directories";
-  } else if (cmd.startsWith('rm')) {
-    return "Removes files or directories";
-  } else if (cmd.startsWith('cp')) {
-    return "Copies files or directories";
-  } else if (cmd.startsWith('mv')) {
-    return "Moves or renames files or directories";
-  } else if (cmd.startsWith('chmod')) {
-    return "Changes file permissions";
-  } else if (cmd.startsWith('sudo')) {
-    return "Executes command with elevated privileges";
-  } else if (cmd.startsWith('git')) {
-    return "Git version control operation";
-  } else if (cmd.startsWith('npm') || cmd.startsWith('yarn')) {
-    return "Package manager operation";
-  } else if (cmd.startsWith('docker')) {
-    return "Docker container operation";
-  } else if (cmd.includes('curl') || cmd.includes('wget')) {
-    return "Downloads files or makes HTTP requests";
-  } else if (cmd.startsWith('ssh')) {
-    return "Connects to remote server via SSH";
-  } else if (cmd.startsWith('scp')) {
-    return "Copies files over SSH";
-  } else {
-    return "Custom command - review carefully before execution";
-  }
-}
-
-function getSafetyNotes(command: string): string {
-  const cmd = command.toLowerCase().trim();
-  const notes: string[] = [];
-
-  if (cmd.includes('rm -rf') || cmd.includes('rm -r')) {
-    notes.push("⚠️  DESTRUCTIVE: This will permanently delete files/directories");
-  }
-
-  if (cmd.startsWith('sudo')) {
-    notes.push("🔐 Requires elevated privileges - ensure you trust this command");
-  }
-
-  if (cmd.includes('kill -9')) {
-    notes.push("💀 Force kills processes - may cause data loss");
-  }
-
-  if (cmd.includes('chmod 777')) {
-    notes.push("🔓 Sets very permissive file permissions - security risk");
-  }
-
-  if (cmd.includes('curl') && cmd.includes('| sh')) {
-    notes.push("🌐 Downloads and executes remote script - verify source");
-  }
-
-  if (cmd.includes('dd')) {
-    notes.push("💾 Low-level disk operation - can cause data loss if misused");
-  }
-
-  if (cmd.includes('fdisk') || cmd.includes('mkfs')) {
-    notes.push("💽 Disk partitioning/formatting - will destroy data");
-  }
-
-  if (cmd.includes('passwd') || cmd.includes('useradd')) {
-    notes.push("👤 User account modification - affects system security");
-  }
-
-  if (cmd.includes('iptables') || cmd.includes('ufw')) {
-    notes.push("🔥 Firewall modification - affects network security");
-  }
-
-  if (notes.length === 0) {
-    notes.push("✅ Generally safe command - review output before proceeding");
-  }
-
-  return notes.join('\n  ');
 }
