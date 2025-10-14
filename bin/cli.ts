@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { run } from "../src/index.js";
-import { showHelp, showConfigMenu, explainCommand } from "../src/commands/index.js";
+import { showHelp, showConfigMenu } from "../src/commands/index.js";
 
 const args = process.argv.slice(2);
 
@@ -21,8 +21,8 @@ if (args.includes('-config') || args.includes('--config')) {
 const explainIndex = args.indexOf('-explain');
 const explainLongIndex = args.indexOf('--explain');
 const explainFlagIndex = explainIndex !== -1 ? explainIndex : explainLongIndex;
-
-if (explainFlagIndex !== -1) {
+const explain = explainFlagIndex !== -1;
+if (explain) {
   // Remove the explain flag and get the remaining arguments
   const explainArgs = args.filter((arg, index) => index !== explainFlagIndex);
   const userPrompt = explainArgs.join(" ");
@@ -32,9 +32,6 @@ if (explainFlagIndex !== -1) {
     console.error("       bob --explain <natural language command>");
     process.exit(1);
   }
-
-  explainCommand(userPrompt);
-  process.exit(0);
 }
 
 // Check for force flag
@@ -53,4 +50,4 @@ if (!userPrompt) {
   process.exit(1);
 }
 
-run(userPrompt, { force });
+run(userPrompt, { force, explain });

@@ -6,6 +6,7 @@ import { initializeLogger, LogLevel } from "./logger.js";
 
 export interface RunOptions {
   force?: boolean;
+  explain?: boolean;
 }
 
 export async function run(userPrompt: string, options: RunOptions = {}): Promise<void> {
@@ -29,9 +30,25 @@ export async function run(userPrompt: string, options: RunOptions = {}): Promise
     const commandResponse = await generateCommand(
       userPrompt,
       environment,
-      apiKey
+      apiKey,
+      options.explain
     );
     logger.debug("Command generated", { command: commandResponse.command, executable: commandResponse.executable });
+
+    // Show explanation if requested
+    if (options.explain && commandResponse.explanation) {
+      if (commandResponse.executable) {
+        console.log(`
+Command:   ${commandResponse.command}
+Explanation:
+${commandResponse.explanation}`);
+      } else {
+        console.log(`
+Command:   ${commandResponse.command}
+Explanation:
+${commandResponse.explanation}`);
+      }
+    }
 
     await executeWithConfirmation(commandResponse, options.force);
   } catch (error) {

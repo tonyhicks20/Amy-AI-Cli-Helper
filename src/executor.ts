@@ -17,11 +17,10 @@ export async function executeWithConfirmation(
   commandResponse: CommandResponse,
   force: boolean = false
 ): Promise<ExecutionResult | null> {
-  log.command(`Generated command:\n  ${commandResponse.command}`);
 
   // Check if command is executable
   if (!commandResponse.executable) {
-    log.info("This is not an executable command. Displaying response:");
+    log.debug("This is not an executable command. Displaying response:");
     console.log(commandResponse.command);
     return { success: true, stdout: commandResponse.command };
   }
@@ -29,7 +28,7 @@ export async function executeWithConfirmation(
   if (!force) {
     const confirmed = await confirmExecution();
     if (!confirmed) {
-      log.info("Aborted.");
+      log.debug("Aborted.");
       return null;
     }
   }
@@ -43,7 +42,7 @@ async function confirmExecution(): Promise<boolean> {
     output: process.stdout,
   });
 
-  const answer = await rl.question("Run this? [y/N] ");
+  const answer = await rl.question("Do you want to run this? [y/n] ");
   rl.close();
 
   return answer.toLowerCase() === "y";

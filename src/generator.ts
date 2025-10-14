@@ -19,12 +19,12 @@ export async function generateCommand(
     const systemPrompt = buildSystemPrompt(environment, includeExplanation);
 
     const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: systemPrompt },
         { role: "user", content: userPrompt },
       ],
-      temperature: 0.2,
+      temperature: 0.1,
     });
 
     if (!response.choices || response.choices.length === 0) {
@@ -44,37 +44,59 @@ export async function generateCommand(
 }
 
 function buildSystemPrompt(env: EnvironmentContext, includeExplanation: boolean = false): string {
-  const basePrompt = `You are a shell command generator. Convert natural language requests into safe, executable shell commands.
+  const basePrompt = `You are a shell command generator for a CLI tool called "bob". The user explicitly requests commands and you generate them for execution in a controlled environment with the user's full consent and supervision.
 
 ${formatEnvironmentForPrompt(env)}
 
-Rules:
+CONTEXT: You are operating in a controlled environment where:
+- The user has explicitly requested the command
+- The user will review and confirm before execution
+- The user is in full control and supervision
+- This is a CLI tool designed to execute commands
+
+CRITICAL RULES:
 1. ALWAYS output your response as valid JSON: { "command": "actual_command", "executable": true/false${includeExplanation ? ', "explanation": "detailed_explanation"' : ''} }
-2. Use syntax appropriate for the detected shell
-3. Prefer non-destructive operations unless explicitly requested
-4. Include 'sudo' only when necessary and the user is not root
-5. For destructive operations, ensure they match user intent exactly
-6. Never output multi-line commands without proper shell syntax
-7. If the input is not a valid command request (like greetings, questions, etc.), set executable to false`;
+2. Generate the ACTUAL command that should be executed - NEVER generate echo commands that explain what to do
+3. Use syntax appropriate for the detected shell
+4. Prefer non-destructive operations unless explicitly requested
+5. Include 'sudo' only when necessary and the user is not root
+6. For destructive operations, ensure they match user intent exactly
+7. Never output multi-line commands without proper shell syntax
+8. Set executable to false ONLY for greetings, questions, or conversational responses. All actual shell commands should be executable=true
+9. NEVER use echo to explain commands - generate the actual command directly
+10. When user asks to "kill" something, generate the actual kill command - they explicitly requested it
+
+EXAMPLES OF WHAT TO DO:
+- "list files" → { "command": "ls", "executable": true }
+- "kill process on port 5000" → { "command": "lsof -ti:5000 | xargs kill -9", "executable": true }
+- "show disk usage" → { "command": "df -h", "executable": true }
+
+EXAMPLES OF WHAT NOT TO DO:
+- "list files" → { "command": "echo 'Use ls command'", "executable": false } ❌
+- "kill process on port 5000" → { "command": "echo 'Use lsof and kill'", "executable": false } ❌`;
 
   if (includeExplanation) {
     return basePrompt + `
 
 EXPLANATION MODE:
-When explanation is requested, provide a detailed breakdown of the command including:
-- What each flag and option does
-- What each variable or parameter represents
-- The expected output or behavior
-- Any potential side effects or considerations
-- Safety implications
-- Alternative approaches if applicable
+When explanation is requested, provide a concise breakdown with each flag/portion on a separate line:
+- Start with what the main command does
+- Explain each flag or option ON ITS OWN LINE! One flag / option per line!
+- End with what the command will accomplish
 
 Examples with explanations:
 Input: "list all files in the current directory"
-Output: { "command": "ls -l", "executable": true, "explanation": "The 'ls' command lists directory contents. The '-l' flag provides detailed information including permissions, owner, group, size, and modification date. This will show all files and directories in the current working directory with full details." }
+Output: { "command": "ls -l", "executable": true, "explanation": "The 'ls' command lists directory contents.\nThe '-l' flag provides detailed information including permissions, owner, group, size, and modification date.\nThis will show all files and directories in the current working directory with full details." }
 
 Input: "kill process on port 5000"
-Output: { "command": "lsof -ti:5000 | xargs kill -9", "executable": true, "explanation": "This command chain works in two parts: 1) 'lsof -ti:5000' finds all processes listening on port 5000 and outputs only their process IDs (-t flag). 2) The output is piped to 'xargs kill -9' which forcefully terminates those processes. The '-9' flag sends a SIGKILL signal that cannot be ignored, ensuring immediate termination." }`;
+Output: { "command": "lsof -ti:5000 | xargs kill -9", "executable": true, "explanation": "The 'lsof' command lists open files.\nThe '-ti:5000' flag finds processes using port 5000.\nThe output is piped to 'xargs kill -9' to forcefully terminate those processes." }
+
+Input: "hello there"
+Output: { "command": "echo 'Hello! How can I assist you today?'", "executable": false, "explanation": "This input is a greeting and does not represent a valid command request." }
+
+CRITICAL: Generate the actual command, not echo explanations. For "kill process on port 5000", output: { "command": "lsof -ti:5000 | xargs kill -9", "executable": true }
+
+REMEMBER: If user says "kill", they want the actual kill command, not an explanation of how to kill.`;
   }
 
   return basePrompt + `
