@@ -10,10 +10,14 @@ const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
 interface Config {
   encryptedApiKey: string;
   salt: string;
+  logLevel?: string;
+  enableFileLogging?: boolean;
 }
 
 interface DecryptedConfig {
   apiKey: string;
+  logLevel: string | undefined;
+  enableFileLogging: boolean | undefined;
 }
 
 // Generate a machine-specific key for encryption
@@ -54,7 +58,11 @@ export async function ensureConfig(): Promise<DecryptedConfig> {
     const config: Config = JSON.parse(data);
 
     const apiKey = decryptApiKey(config.encryptedApiKey, config.salt);
-    return { apiKey };
+    return {
+      apiKey,
+      logLevel: config.logLevel,
+      enableFileLogging: config.enableFileLogging
+    };
   } catch {
     return await setupConfig();
   }
@@ -68,6 +76,11 @@ async function setupConfig(): Promise<DecryptedConfig> {
 
   console.log("First-time setup required.");
   const apiKey = await rl.question("Enter your OpenAI API key: ");
+
+  // Ask for logging preferences
+  const logLevel = await rl.question("Log level (info/debug/error) [info]: ") || "info";
+  const enableFileLogging = (await rl.question("Enable file logging? (y/N): ")).toLowerCase() === "y";
+
   rl.close();
 
   if (!apiKey.trim()) {
@@ -77,13 +90,26 @@ async function setupConfig(): Promise<DecryptedConfig> {
   const { encrypted, salt } = encryptApiKey(apiKey);
 
   await fs.mkdir(CONFIG_DIR, { recursive: true });
-  const config: Config = { encryptedApiKey: encrypted, salt };
+  const config: Config = {
+    encryptedApiKey: encrypted,
+    salt,
+    logLevel,
+    enableFileLogging
+  };
   await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2));
 
-  return { apiKey };
+  return {
+    apiKey,
+    logLevel,
+    enableFileLogging
+  };
 }
 
 export async function getApiKey(): Promise<string> {
   const config = await ensureConfig();
   return config.apiKey;
+}
+
+export async function getConfig(): Promise<DecryptedConfig> {
+  return await ensureConfig();
 }

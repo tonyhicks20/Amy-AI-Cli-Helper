@@ -30,7 +30,8 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "openai": "^6.3.0"
+    "openai": "^6.3.0",
+    "winston": "^3.18.3"
   },
   "devDependencies": {
     "@types/node": "^24.7.2",

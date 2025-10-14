@@ -2,6 +2,7 @@ import os from "os";
 import { exec } from "child_process";
 import { promisify } from "util";
 import path from "path";
+import { log } from "./logger.js";
 
 const execAsync = promisify(exec);
 
@@ -35,7 +36,7 @@ export async function getEnvironmentContext(): Promise<EnvironmentContext> {
       isRoot,
     };
   } catch (error) {
-    console.error("Environment detection error:", error);
+    log.error("Environment detection error", error);
     throw new Error(`Failed to detect environment: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

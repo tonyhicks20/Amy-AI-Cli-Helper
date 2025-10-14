@@ -1,6 +1,7 @@
 import { exec } from "child_process";
 import { promisify } from "util";
 import readline from "readline/promises";
+import { log } from "./logger.js";
 
 const execAsync = promisify(exec);
 
@@ -15,12 +16,12 @@ export async function executeWithConfirmation(
   command: string,
   force: boolean = false
 ): Promise<ExecutionResult | null> {
-  console.log(`\n📋 Generated command:\n  ${command}\n`);
+  log.command(`Generated command:\n  ${command}`);
 
   if (!force) {
     const confirmed = await confirmExecution();
     if (!confirmed) {
-      console.log("❌ Aborted.");
+      log.info("Aborted.");
       return null;
     }
   }
@@ -42,23 +43,24 @@ async function confirmExecution(): Promise<boolean> {
 
 async function runCommand(command: string): Promise<ExecutionResult> {
   try {
+    log.debug("Executing command", { command });
     const { stdout, stderr } = await execAsync(command);
 
     if (stderr) {
-      console.error(`⚠️  stderr:\n${stderr}`);
+      log.warning(`stderr:\n${stderr}`);
     }
 
     if (stdout) {
-      console.log(`✅ Output:\n${stdout}`);
+      log.success(`Output:\n${stdout}`);
     }
 
     return { success: true, stdout, stderr };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`❌ Error: ${errorMessage}`);
+    log.failure(`Error: ${errorMessage}`);
 
     if (error && typeof error === 'object' && 'stderr' in error) {
-      console.error(error.stderr);
+      log.error("Command stderr", error.stderr);
     }
 
     return { success: false, error: errorMessage };

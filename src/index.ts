@@ -1,7 +1,8 @@
-import { getApiKey } from "./config.js";
+import { getConfig } from "./config.js";
 import { getEnvironmentContext } from "./environment.js";
 import { generateCommand } from "./generator.js";
 import { executeWithConfirmation } from "./executor.js";
+import { initializeLogger, LogLevel } from "./logger.js";
 
 export interface RunOptions {
   force?: boolean;
@@ -9,27 +10,35 @@ export interface RunOptions {
 
 export async function run(userPrompt: string, options: RunOptions = {}): Promise<void> {
   try {
-    console.log("Getting API key...");
-    const apiKey = await getApiKey();
-    console.log("API key retrieved successfully");
+    // Initialize logger with config
+    const config = await getConfig();
+    const logger = initializeLogger({
+      level: (config.logLevel as LogLevel) || LogLevel.INFO,
+      enableFile: config.enableFileLogging || false
+    });
 
-    console.log("Getting environment context...");
+    logger.debug("Getting API key...");
+    const apiKey = config.apiKey;
+    logger.debug("API key retrieved successfully");
+
+    logger.debug("Getting environment context...");
     const environment = await getEnvironmentContext();
-    console.log("Environment context retrieved:", environment);
+    logger.debug("Environment context retrieved", environment);
 
-    console.log("Generating command...");
+    logger.debug("Generating command...");
     const command = await generateCommand(
       userPrompt,
       environment,
       apiKey
     );
-    console.log("Command generated:", command);
+    logger.debug("Command generated", { command });
 
     await executeWithConfirmation(command, options.force);
   } catch (error) {
-    console.error("Error details:", error);
+    const logger = initializeLogger();
+    logger.error("Error details", error);
     const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error(`Fatal error: ${errorMessage}`);
+    logger.failure(`Fatal error: ${errorMessage}`);
     process.exit(1);
   }
 }
