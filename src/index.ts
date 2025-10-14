@@ -9,13 +9,16 @@ export interface RunOptions {
   explain?: boolean;
 }
 
-export async function run(userPrompt: string, options: RunOptions = {}): Promise<void> {
+export async function run(
+  userPrompt: string,
+  options: RunOptions = {}
+): Promise<void> {
   try {
     // Initialize logger with config
     const config = await getConfig();
     const logger = initializeLogger({
       level: (config.logLevel as LogLevel) || LogLevel.INFO,
-      enableFile: config.enableFileLogging || false
+      enableFile: config.enableFileLogging || false,
     });
 
     logger.debug("Getting API key...");
@@ -33,21 +36,24 @@ export async function run(userPrompt: string, options: RunOptions = {}): Promise
       apiKey,
       options.explain
     );
-    logger.debug("Command generated", { command: commandResponse.command, executable: commandResponse.executable });
+    logger.debug("Command generated", {
+      command: commandResponse.command,
+      executable: commandResponse.executable,
+    });
 
-    // Show explanation if requested
+    // Check if command is executable
+    if (!commandResponse.executable) {
+      console.log(commandResponse.command);
+      return;
+    }
+
+    console.log(`====================================================`);
+    console.log(`Command:   ${commandResponse.command}`);
+    console.log(`====================================================`);
+
     if (options.explain && commandResponse.explanation) {
-      if (commandResponse.executable) {
-        console.log(`
-Command:   ${commandResponse.command}
-Explanation:
+      console.log(`Explanation:
 ${commandResponse.explanation}`);
-      } else {
-        console.log(`
-Command:   ${commandResponse.command}
-Explanation:
-${commandResponse.explanation}`);
-      }
     }
 
     await executeWithConfirmation(commandResponse, options.force);

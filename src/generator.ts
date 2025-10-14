@@ -83,6 +83,7 @@ When explanation is requested, provide a concise breakdown with each flag/portio
 - Start with what the main command does
 - Explain each flag or option ON ITS OWN LINE! One flag / option per line!
 - End with what the command will accomplish
+- Use \\n to separate each line in the JSON explanation field
 
 Examples with explanations:
 Input: "list all files in the current directory"
@@ -96,7 +97,10 @@ Output: { "command": "echo 'Hello! How can I assist you today?'", "executable": 
 
 CRITICAL: Generate the actual command, not echo explanations. For "kill process on port 5000", output: { "command": "lsof -ti:5000 | xargs kill -9", "executable": true }
 
-REMEMBER: If user says "kill", they want the actual kill command, not an explanation of how to kill.`;
+REMEMBER: If user says "kill", they want the actual kill command, not an explanation of how to kill.
+
+FORMATTING: Each line of explanation must be separated by \\n in the JSON. Example:
+{ "command": "find . -name '*.txt'", "executable": true, "explanation": "The 'find' command searches for files.\\nThe '.' specifies the current directory.\\nThe '-name' flag matches filenames.\\nThe '*.txt' pattern matches all .txt files." }`;
   }
 
   return basePrompt + `

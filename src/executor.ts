@@ -18,13 +18,6 @@ export async function executeWithConfirmation(
   force: boolean = false
 ): Promise<ExecutionResult | null> {
 
-  // Check if command is executable
-  if (!commandResponse.executable) {
-    log.debug("This is not an executable command. Displaying response:");
-    console.log(commandResponse.command);
-    return { success: true, stdout: commandResponse.command };
-  }
-
   if (!force) {
     const confirmed = await confirmExecution();
     if (!confirmed) {
