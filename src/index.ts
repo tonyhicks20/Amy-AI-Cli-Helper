@@ -1,7 +1,6 @@
 import { getConfig } from "./config.js";
 import { getEnvironmentContext } from "./environment.js";
-import { generateCommand } from "./generator.js";
-import { executeWithConfirmation } from "./executor.js";
+import { CommandSession } from "./session.js";
 import { initializeLogger, LogLevel } from "./logger.js";
 
 export interface RunOptions {
@@ -29,34 +28,15 @@ export async function run(
     const environment = await getEnvironmentContext();
     logger.debug("Environment context retrieved", environment);
 
-    logger.debug("Generating command...");
-    const commandResponse = await generateCommand(
-      userPrompt,
-      environment,
+    // Create and run command session
+    const session = new CommandSession({
       apiKey,
-      options.explain
-    );
-    logger.debug("Command generated", {
-      command: commandResponse.command,
-      executable: commandResponse.executable,
+      environment,
+      logger,
+      options,
     });
 
-    // Check if command is executable
-    if (!commandResponse.executable) {
-      console.log(commandResponse.command);
-      return;
-    }
-
-    console.log(`====================================================`);
-    console.log(`Command:   ${commandResponse.command}`);
-    console.log(`====================================================`);
-
-    if (options.explain && commandResponse.explanation) {
-      console.log(`Explanation:
-${commandResponse.explanation}`);
-    }
-
-    await executeWithConfirmation(commandResponse, options.force);
+    await session.run(userPrompt);
   } catch (error) {
     const logger = initializeLogger();
     logger.error("Error details", error);
