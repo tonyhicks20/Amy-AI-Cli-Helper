@@ -75,6 +75,8 @@ function parseCommandResponse(
       result.explanation = parsed.explanation.trim();
     }
 
+    // Sanitize potential echo commands
+    result = sanitizeEchoCommand(result);
     return result;
   } catch (error) {
     // Fallback: treat as old format and assume executable
@@ -97,4 +99,40 @@ function parseCommandResponse(
     result = sanitizeEchoCommand(result);
     return result;
   }
+}
+
+function sanitizeEchoCommand(result: CommandResponse): CommandResponse {
+  const command = result.command.trim();
+
+  // Check if it's an echo command
+  const echoMatch = command.match(/^echo\s+(.+)$/i);
+  if (!echoMatch) {
+    return result;
+  }
+
+  // Check if the echo command is piped to another command
+  const hasPipe = command.includes("|");
+
+  // If it's executable and has a pipe, keep it as-is (user wants to execute it)
+  if (result.executable && hasPipe) {
+    return result;
+  }
+
+  let echoContent = echoMatch[1];
+
+  // Remove surrounding quotes if present
+  if (
+    echoContent &&
+    ((echoContent.startsWith('"') && echoContent.endsWith('"')) ||
+      (echoContent.startsWith("'") && echoContent.endsWith("'")))
+  ) {
+    echoContent = echoContent.slice(1, -1);
+  }
+
+  // Otherwise, replace the command with just the message content
+  return {
+    ...result,
+    command: echoContent || "", // Replace command with just the message
+    executable: false, // Don't execute, just show the message
+  };
 }
