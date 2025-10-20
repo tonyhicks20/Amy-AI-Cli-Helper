@@ -12,22 +12,22 @@ export function showHelp(): void {
     ╰─────────────────────────╯
 
     ╭─────────────────────────╮
-    │     👨🏿‍🦱 Bob says:        │
+    │     👩 Amy says:         │
     │  "Let me help you with   │
     │   those commands!"       │
     ╰─────────────────────────╯
 
 DESCRIPTION:
-  Bob converts natural language commands into executable shell commands using AI.
-  Simply describe what you want to do, and Bob will generate and execute the appropriate command.
+  Amy converts natural language commands into executable shell commands using AI.
+  Simply describe what you want to do, and Amy will generate and execute the appropriate command.
 
 USAGE:
-  bob [OPTIONS] <natural language command>
-  bob <COMMAND>
+  amy [OPTIONS] <natural language command>
+  amy <COMMAND>
 
 COMMANDS:
   -help, --help     Show this help message
-  -config, --config Configure Bob settings
+  -config, --config Configure Amy settings
   -explain, --explain Show what command would be generated (without executing)
 
 OPTIONS:
@@ -35,18 +35,18 @@ OPTIONS:
 
 EXAMPLES:
   # Basic usage
-  bob "list all files"
-  bob "kill process on port 5000"
-  bob "show disk usage"
+  amy "list all files"
+  amy "kill process on port 5000"
+  amy "show disk usage"
 
   # Skip confirmation
-  bob --force "list files"
+  amy --force "list files"
 
   # Configuration
-  bob -config
+  amy -config
 
   # Explain commands
-  bob -explain "kill process on port 5000"
+  amy -explain "kill process on port 5000"
 
 FEATURES:
   🔒 Encrypted API key storage
@@ -56,14 +56,14 @@ FEATURES:
   🎯 Environment-aware command generation
 
 CONFIGURATION:
-  Bob stores configuration in ~/.bob-command-tool/config.json
+  Amy stores configuration in ~/.amy-command-tool/config.json
   - API key (encrypted)
   - Log level (info/debug/error)
   - File logging preference
 
 FIRST TIME SETUP:
   Run any command to start the setup process:
-  bob "list files"
+  amy "list files"
 
   You'll be prompted for:
   - OpenAI API key
@@ -75,6 +75,6 @@ REQUIREMENTS:
   - OpenAI API key
   - Internet connection for AI processing
 
-For more information, visit: https://github.com/your-repo/bob
+For more information, visit: https://github.com/your-repo/amy
 `);
 }

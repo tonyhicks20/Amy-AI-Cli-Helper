@@ -124,7 +124,7 @@ export function initializeLogger(config?: Partial<LoggerConfig>): Logger {
 
   // Set default log file if file logging is enabled but no file specified
   if (finalConfig.enableFile && !finalConfig.logFile) {
-    finalConfig.logFile = path.join(os.homedir(), '.bob-command-tool', 'bob.log');
+    finalConfig.logFile = path.join(os.homedir(), '.amy-command-tool', 'amy.log');
   }
 
   logger = new Logger(finalConfig);

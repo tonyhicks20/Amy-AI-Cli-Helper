@@ -12,8 +12,8 @@ npm link
 ```
 
 This creates:
-- Global command: `bob`
-- Symbolic link: `/opt/homebrew/bin/bob` → `../lib/node_modules/bob/dist/bin/cli.js`
+- Global command: `amy`
+- Symbolic link: `/opt/homebrew/bin/amy` → `../lib/node_modules/amy/dist/bin/cli.js`
 
 ## Update Commands
 
@@ -34,22 +34,22 @@ npm link
 ## Remove Commands
 
 ```bash
-npm unlink bob
+npm unlink amy
 ```
 
 ## Check Status Commands
 
 ```bash
-# Check if bob is installed
-which bob
+# Check if amy is installed
+which amy
 
 # Check the link target
-ls -la /opt/homebrew/bin/bob
+ls -la /opt/homebrew/bin/amy
 ```
 
 ## Complete Workflow
 
 1. Make changes to TypeScript files
 2. Run `npm run build`
-3. Test with `bob "your command"`
+3. Test with `amy "your command"`
 4. Changes are immediately available since it's linked

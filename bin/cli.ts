@@ -28,8 +28,8 @@ if (explain) {
   const userPrompt = explainArgs.join(" ");
 
   if (!userPrompt) {
-    console.error("Usage: bob -explain <natural language command>");
-    console.error("       bob --explain <natural language command>");
+    console.error("Usage: amy -explain <natural language command>");
+    console.error("       amy --explain <natural language command>");
     process.exit(1);
   }
 }
@@ -42,11 +42,11 @@ if (force) args.splice(forceIndex, 1);
 const userPrompt = args.join(" ");
 
 if (!userPrompt) {
-  console.error("Usage: bob <natural language command>");
-  console.error("       bob --force <natural language command>");
-  console.error("       bob -help");
-  console.error("       bob -config");
-  console.error("       bob -explain <natural language command>");
+  console.error("Usage: amy <natural language command>");
+  console.error("       amy --force <natural language command>");
+  console.error("       amy -help");
+  console.error("       amy -config");
+  console.error("       amy -explain <natural language command>");
   process.exit(1);
 }
 

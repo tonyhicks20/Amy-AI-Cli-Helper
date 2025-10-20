@@ -13,14 +13,14 @@ Bob is a TypeScript CLI tool that converts natural language commands into execut
 ### Global Installation (Recommended)
 
 ```bash
-npm install -g bob
+npm install -g amy
 ```
 
 ### Local Development
 
 ```bash
 git clone <repository-url>
-cd bob
+cd amy
 npm install
 npm run build
 npm link
@@ -28,47 +28,47 @@ npm link
 
 ## First-Time Setup
 
-On first run, Bob will prompt you to enter your OpenAI API key. This is encrypted and stored securely in `~/.bob-command-tool/config.json` using machine-specific encryption keys.
+On first run, Bob will prompt you to enter your OpenAI API key. This is encrypted and stored securely in `~/.amy-command-tool/config.json` using machine-specific encryption keys.
 
 ## Usage
 
 ### Basic Usage
 
 ```bash
-bob "list all files in current directory"
-bob "kill process on port 5000"
-bob "show disk usage"
-bob "find all .js files"
+amy "list all files in current directory"
+amy "kill process on port 5000"
+amy "show disk usage"
+amy "find all .js files"
 ```
 
 ### Force Execution (Skip Confirmation)
 
 ```bash
-bob --force "list files"
+amy --force "list files"
 ```
 
 ## Examples
 
 ```bash
 # File operations
-bob "list all files"
-bob "find all .js files in this directory"
-bob "show disk usage"
+amy "list all files"
+amy "find all .js files in this directory"
+amy "show disk usage"
 
 # Process management
-bob "kill process on port 5000"
-bob "show running processes"
-bob "restart nginx"
+amy "kill process on port 5000"
+amy "show running processes"
+amy "restart nginx"
 
 # System information
-bob "show system information"
-bob "check memory usage"
-bob "show network connections"
+amy "show system information"
+amy "check memory usage"
+amy "show network connections"
 
 # Git operations
-bob "show git status"
-bob "commit all changes with message 'fix bug'"
-bob "push to origin main"
+amy "show git status"
+amy "commit all changes with message 'fix bug'"
+amy "push to origin main"
 ```
 
 ## Safety Features
@@ -80,7 +80,7 @@ bob "push to origin main"
 
 ## Configuration
 
-Configuration is encrypted and stored in `~/.bob-command-tool/config.json`:
+Configuration is encrypted and stored in `~/.amy-command-tool/config.json`:
 
 ```json
 {

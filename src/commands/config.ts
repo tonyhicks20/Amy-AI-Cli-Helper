@@ -6,7 +6,7 @@ import crypto from "crypto";
 import { getConfig } from "../config.js";
 import { LogLevel } from "../logger.js";
 
-const CONFIG_DIR = path.join(os.homedir(), ".bob-command-tool");
+const CONFIG_DIR = path.join(os.homedir(), ".amy-command-tool");
 const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
 
 interface Config {
@@ -77,11 +77,11 @@ What would you like to change?
         console.log("Goodbye!");
         break;
       default:
-        console.log("Invalid choice. Please run 'bob -config' again.");
+        console.log("Invalid choice. Please run 'amy -config' again.");
     }
   } catch (error) {
     console.error("Configuration error:", error);
-    console.log("Run 'bob -config' to set up configuration.");
+    console.log("Run 'amy -config' to set up configuration.");
   }
 }
 

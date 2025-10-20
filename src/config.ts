@@ -4,7 +4,7 @@ import os from "os";
 import readline from "readline/promises";
 import crypto from "crypto";
 
-const CONFIG_DIR = path.join(os.homedir(), ".bob-command-tool");
+const CONFIG_DIR = path.join(os.homedir(), ".amy-command-tool");
 const CONFIG_PATH = path.join(CONFIG_DIR, "config.json");
 
 interface Config {

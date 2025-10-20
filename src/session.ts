@@ -128,7 +128,7 @@ ${commandResponse.explanation}`);
   }
 
   private buildSystemPrompt(): string {
-    const basePrompt = `You are a shell command generator for a CLI tool called "bob". The user explicitly requests commands and you generate them for execution in a controlled environment with the user's full consent and supervision.
+    const basePrompt = `You are a shell command generator for a CLI tool called "amy". The user explicitly requests commands and you generate them for execution in a controlled environment with the user's full consent and supervision.
 
 ${this.formatEnvironmentForPrompt()}
 
