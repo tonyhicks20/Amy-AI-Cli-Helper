@@ -16,7 +16,7 @@ export async function generateCommandWithHistory(
     const client = new OpenAI({ apiKey });
 
     const response = await client.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: conversationHistory,
       temperature: 0.1,
     });

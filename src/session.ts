@@ -59,6 +59,7 @@ export class CommandSession {
           executable: commandResponse.executable,
         });
 
+
         // Add assistant's response to history
         this.conversationHistory.push({
           role: "assistant",

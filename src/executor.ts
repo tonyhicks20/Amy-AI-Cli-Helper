@@ -48,10 +48,12 @@ async function runCommand(command: string): Promise<ExecutionResult> {
 
     if (stderr) {
       log.warning(`stderr:\n${stderr}`);
+      console.error(stderr);
     }
 
     if (stdout) {
       log.success(`Output:\n${stdout}`);
+      console.log(stdout);
     }
 
     return { success: true, stdout, stderr };
