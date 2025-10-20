@@ -98,10 +98,10 @@ jspm_packages/
 # TernJS port file
 .tern-port
 
-# Bob CLI specific
+# Amy CLI specific
 # Configuration files with API keys (should never be committed)
-~/.bob-command-tool/
-.bob-command-tool/
+~/.amy-command-tool/
+.amy-command-tool/
 
 # Test files
 test/

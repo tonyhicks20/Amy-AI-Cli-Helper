@@ -37,7 +37,7 @@ export async function showConfigMenu(): Promise<void> {
     const config = await getConfig();
 
     console.log(`
-🔧 Bob Configuration
+🔧 Amy Configuration
 
 Current Settings:
   Log Level: ${config.logLevel || 'info'}
