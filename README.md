@@ -13,7 +13,7 @@ Amy is a TypeScript CLI tool that converts natural language commands into execut
 ### Global Installation (Recommended)
 
 ```bash
-npm install -g amy
+npm install -g @prodfact/amy
 ```
 
 ### Local Development
