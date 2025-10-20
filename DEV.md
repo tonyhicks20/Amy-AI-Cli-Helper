@@ -1,4 +1,4 @@
-# Bob CLI Tool - Local Development Commands
+# Amy CLI Tool - Local Development Commands
 
 ## How npm link Works
 
