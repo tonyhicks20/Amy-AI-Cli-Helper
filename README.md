@@ -1,6 +1,6 @@
 # Amy - AI-Powered CLI Command Tool
 
-Amy is a TypeScript CLI tool that converts natural language commands into executable shell commands using OpenAI's GPT models. Simply describe what you want to do, and Bob will generate and execute the appropriate command for your system.
+Amy is a TypeScript CLI tool that converts natural language commands into executable shell commands using OpenAI's GPT models. Simply describe what you want to do, and Amy will generate and execute the appropriate command for your system.
 
 ## 🔒 Security Features
 
@@ -28,7 +28,7 @@ npm link
 
 ## First-Time Setup
 
-On first run, Bob will prompt you to enter your OpenAI API key. This is encrypted and stored securely in `~/.amy-command-tool/config.json` using machine-specific encryption keys.
+On first run, Amy will prompt you to enter your OpenAI API key. This is encrypted and stored securely in `~/.amy-command-tool/config.json` using machine-specific encryption keys.
 
 ## Usage
 
@@ -73,7 +73,7 @@ amy "push to origin main"
 
 ## Safety Features
 
-- **Confirmation Required**: Bob always asks for confirmation before executing commands
+- **Confirmation Required**: Amy always asks for confirmation before executing commands
 - **Environment Detection**: Automatically detects your OS, shell, and system context
 - **Safe Command Generation**: Uses GPT-4o-mini with specific prompts to generate safe commands
 - **Error Handling**: Provides clear error messages if commands fail
@@ -100,7 +100,7 @@ The API key is encrypted using PBKDF2 with a machine-specific key derived from y
 
 ## How It Works
 
-1. **Environment Detection**: Bob detects your OS, shell, architecture, and current working directory
+1. **Environment Detection**: Amy detects your OS, shell, architecture, and current working directory
 2. **AI Command Generation**: Sends your natural language request along with environment context to OpenAI
 3. **Safety Confirmation**: Shows you the generated command and asks for confirmation
 4. **Execution**: Runs the command and displays the output
