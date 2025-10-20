@@ -1,6 +1,6 @@
-# Bob - AI-Powered CLI Command Tool
+# Amy - AI-Powered CLI Command Tool
 
-Bob is a TypeScript CLI tool that converts natural language commands into executable shell commands using OpenAI's GPT models. Simply describe what you want to do, and Bob will generate and execute the appropriate command for your system.
+Amy is a TypeScript CLI tool that converts natural language commands into executable shell commands using OpenAI's GPT models. Simply describe what you want to do, and Bob will generate and execute the appropriate command for your system.
 
 ## 🔒 Security Features
 
