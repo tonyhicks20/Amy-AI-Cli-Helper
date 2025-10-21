@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import { EnvironmentContext } from "./environment.js";
 
 export interface CommandResponse {
   command: string;

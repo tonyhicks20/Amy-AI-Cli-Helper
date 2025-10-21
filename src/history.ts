@@ -77,25 +77,3 @@ export async function recordFailure(
   await _saveHistory(history);
 }
 
-/**
- * Format failure history for inclusion in the system prompt
- */
-export async function formatFailuresForPrompt(): Promise<string> {
-  const history = await loadHistory();
-
-  if (history.failures.length === 0) {
-    return "";
-  }
-
-  let prompt = "\n\nLEARNING FROM PAST FAILURES:\n";
-  prompt += "The following commands have failed in the past on this system. Avoid repeating these mistakes:\n\n";
-
-  history.failures.forEach((failure, index) => {
-    prompt += `${index + 1}. Intent: "${failure.userIntent}"\n`;
-    prompt += `   Failed Command: ${failure.failedCommand}\n`;
-    prompt += `   Error: ${failure.error}\n`;
-    prompt += "\n";
-  });
-
-  return prompt;
-}
