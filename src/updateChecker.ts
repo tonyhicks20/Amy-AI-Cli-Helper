@@ -116,16 +116,19 @@ export async function checkForUpdates(): Promise<void> {
     const latestVersion = await _fetchLatestVersion(packageName);
 
     if (_isNewerVersion(localVersion, latestVersion)) {
+      // Build the update command
+      const updateCommand = `npm update -g ${packageName}`;
+
       console.log('');
-      console.log('╭─────────────────────────────────────────────────╮');
-      console.log('│  🔔 Update Available!                           │');
-      console.log('│                                                 │');
-      console.log(`│  Current version: ${localVersion.padEnd(29)} │`);
-      console.log(`│  Latest version:  ${latestVersion.padEnd(29)} │`);
-      console.log('│                                                 │');
-      console.log('│  Update with:                                   │');
-      console.log(`│  npm update -g ${packageName.padEnd(30)} │`);
-      console.log('╰─────────────────────────────────────────────────╯');
+      console.log('───────────────────────────────────────────────────');
+      console.log('  🔔 Update Available!                           ');
+      console.log('                                                 ');
+      console.log(`  Current version: ${localVersion.padEnd(29)} `);
+      console.log(`  Latest version:  ${latestVersion.padEnd(29)} `);
+      console.log('                                                 ');
+      console.log('  Update with:                                   ');
+      console.log(`  ${updateCommand} `);
+      console.log('─────────────────────────────────────────────────');
       console.log('');
     }
   } catch (error) {
