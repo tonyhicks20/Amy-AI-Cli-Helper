@@ -3,6 +3,7 @@ import { EnvironmentContext } from "./environment.js";
 import { generateCommandWithHistory } from "./generator.js";
 import { executeWithConfirmation, ExecutionResult } from "./executor.js";
 import { initializeLogger } from "./logger.js";
+import { formatFailuresForPrompt, recordFailure } from "./history.js";
 
 export interface RunOptions {
   force?: boolean;
@@ -36,7 +37,7 @@ export class CommandSession {
 
     // Initialize conversation with system prompt and user request
     this.conversationHistory = [
-      { role: "system", content: this.buildSystemPrompt() },
+      { role: "system", content: await this.buildSystemPrompt() },
       { role: "user", content: userPrompt },
     ];
 
@@ -105,12 +106,25 @@ ${commandResponse.explanation}`);
           this.logger.debug("Command executed successfully");
           return;
         } else {
-          // Command failed - add failure to history and retry
+          // Command failed - persist failure to disk for future sessions
           this.logger.debug("Command failed, adding to history and retrying", {
             error: executionResult.error,
             stderr: executionResult.stderr,
           });
 
+          const errorMessage =
+            executionResult.error || executionResult.stderr || "Unknown error";
+          await recordFailure(
+            userPrompt,
+            commandResponse.command,
+            errorMessage
+          );
+          this.logger.debug("Recorded failure to persistent history", {
+            command: commandResponse.command,
+            error: errorMessage,
+          });
+
+          // Add failure to conversation history and retry
           const failureMessage = this.buildFailureMessage(executionResult);
           this.conversationHistory.push({
             role: "user",
@@ -128,7 +142,8 @@ ${commandResponse.explanation}`);
     }
   }
 
-  private buildSystemPrompt(): string {
+  private async buildSystemPrompt(): Promise<string> {
+    const failuresPrompt = await formatFailuresForPrompt();
     const basePrompt = `You are a shell command generator for a CLI tool called "amy". The user explicitly requests commands and you generate them for execution in a controlled environment with the user's full consent and supervision.
 
 ${this.formatEnvironmentForPrompt()}
@@ -153,7 +168,7 @@ CRITICAL RULES:
 9. NEVER use echo to explain commands - generate the actual command directly
 10. When user asks to "kill" something, generate the actual kill command - they explicitly requested it
 
-IMPORTANT: If a previous command failed, analyze the error message and generate a corrected command. Learn from the failure and try a different approach.`;
+IMPORTANT: If a previous command failed, analyze the error message and generate a corrected command. Learn from the failure and try a different approach.${failuresPrompt}`;
 
     if (this.options.explain) {
       return (
