@@ -36,6 +36,29 @@ npm run build
 npm link
 ```
 
+## 🔄 Updating Amy
+
+To update to the latest version:
+
+```bash
+npm update -g @prodfact/amy
+```
+
+Or if you want to ensure you have the absolute latest version:
+
+```bash
+npm uninstall -g @prodfact/amy
+npm install -g @prodfact/amy
+```
+
+Check your current version:
+
+```bash
+amy --version
+```
+
+Amy will automatically check for updates when you start a session and notify you if a newer version is available.
+
 ## 🚀 First-Time Setup
 
 When you run Amy for the first time, it will guide you through a quick setup:
@@ -102,6 +125,14 @@ This will show all files and directories in the current working directory with f
 
 ```bash
 amy --help
+```
+
+#### Check Version
+
+```bash
+amy --version
+# or shorthand
+amy -v
 ```
 
 #### Reconfigure API Key
