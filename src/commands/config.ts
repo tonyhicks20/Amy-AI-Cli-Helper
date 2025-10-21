@@ -40,16 +40,14 @@ export async function showConfigMenu(): Promise<void> {
 🔧 Amy Configuration
 
 Current Settings:
-  Log Level: ${config.logLevel || 'info'}
   File Logging: ${config.enableFileLogging ? 'enabled' : 'disabled'}
   Config File: ${CONFIG_PATH}
 
 What would you like to change?
-1. Change log level
-2. Toggle file logging
-3. Update API key
-4. Show current configuration
-5. Exit
+1. Toggle file logging
+2. Update API key
+3. Show current configuration
+4. Exit
 `);
 
     const rl = readline.createInterface({
@@ -57,23 +55,20 @@ What would you like to change?
       output: process.stdout,
     });
 
-    const choice = await rl.question("Enter your choice (1-5): ");
+    const choice = await rl.question("Enter your choice (1-4): ");
     rl.close();
 
     switch (choice.trim()) {
       case '1':
-        await changeLogLevel();
-        break;
-      case '2':
         await toggleFileLogging();
         break;
-      case '3':
+      case '2':
         await updateApiKey();
         break;
-      case '4':
+      case '3':
         await showCurrentConfig();
         break;
-      case '5':
+      case '4':
         console.log("Goodbye!");
         break;
       default:
@@ -85,34 +80,6 @@ What would you like to change?
   }
 }
 
-async function changeLogLevel(): Promise<void> {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  console.log(`
-Available log levels:
-- error: Only show errors
-- warn: Show warnings and errors
-- info: Show info, warnings, and errors (default)
-- debug: Show all messages including debug info
-`);
-
-  const newLevel = await rl.question("Enter new log level (error/warn/info/debug) [info]: ");
-  rl.close();
-
-  const validLevels = ['error', 'warn', 'info', 'debug'];
-  const level = newLevel.trim() || 'info';
-
-  if (!validLevels.includes(level)) {
-    console.log("Invalid log level. Must be one of: error, warn, info, debug");
-    return;
-  }
-
-  await updateConfig({ logLevel: level });
-  console.log(`✅ Log level updated to: ${level}`);
-}
 
 async function toggleFileLogging(): Promise<void> {
   const config = await getConfig();
@@ -147,7 +114,6 @@ async function showCurrentConfig(): Promise<void> {
 
   console.log(`
 📋 Current Configuration:
-  Log Level: ${config.logLevel || 'info'}
   File Logging: ${config.enableFileLogging ? 'enabled' : 'disabled'}
   Config Directory: ${CONFIG_DIR}
   Config File: ${CONFIG_PATH}

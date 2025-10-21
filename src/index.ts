@@ -15,8 +15,12 @@ export async function run(
   try {
     // Initialize logger with config
     const config = await getConfig();
+    
+    // When file logging is enabled: debug level, file only
+    // When file logging is disabled: error level, console only  
     const logger = initializeLogger({
-      level: (config.logLevel as LogLevel) || LogLevel.INFO,
+      level: config.enableFileLogging ? LogLevel.DEBUG : LogLevel.ERROR,
+      enableConsole: !config.enableFileLogging, // Console only when file logging is off
       enableFile: config.enableFileLogging || false,
     });
 

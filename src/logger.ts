@@ -1,6 +1,7 @@
 import winston from 'winston';
 import path from 'path';
 import os from 'os';
+import { Writable } from 'stream';
 
 export enum LogLevel {
   ERROR = 'error',
@@ -57,6 +58,18 @@ class Logger {
       );
     }
 
+    // If no transports are configured, add a null transport to prevent winston warnings
+    if (transports.length === 0) {
+      transports.push(new winston.transports.Stream({
+        stream: new Writable({
+          write(chunk: any, encoding: any, callback: any) {
+            callback();
+          }
+        }),
+        silent: true
+      }));
+    }
+
     return winston.createLogger({
       level: this.config.level,
       transports,
@@ -111,8 +124,8 @@ class Logger {
 
 // Default configuration
 const defaultConfig: LoggerConfig = {
-  level: LogLevel.INFO,
-  enableConsole: true,
+  level: LogLevel.ERROR,
+  enableConsole: true, // Enabled by default for error logs
   enableFile: false
 };
 

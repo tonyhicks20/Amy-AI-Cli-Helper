@@ -77,8 +77,7 @@ async function setupConfig(): Promise<DecryptedConfig> {
   console.log("First-time setup required.");
   const apiKey = await rl.question("Enter your OpenAI API key: ");
 
-  // Ask for logging preferences
-  const logLevel = await rl.question("Log level (info/debug/error) [info]: ") || "info";
+  // Ask for file logging preference only
   const enableFileLogging = (await rl.question("Enable file logging? (y/N): ")).toLowerCase() === "y";
 
   rl.close();
@@ -93,14 +92,14 @@ async function setupConfig(): Promise<DecryptedConfig> {
   const config: Config = {
     encryptedApiKey: encrypted,
     salt,
-    logLevel,
+    logLevel: "error", // Fixed default log level
     enableFileLogging
   };
   await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2));
 
   return {
     apiKey,
-    logLevel,
+    logLevel: "error",
     enableFileLogging
   };
 }
