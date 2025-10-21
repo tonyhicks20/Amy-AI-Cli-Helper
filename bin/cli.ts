@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { run } from "../src/index.js";
-import { showHelp, showConfigMenu } from "../src/commands/index.js";
+import { showHelp, showConfigMenu, showVersion } from "../src/commands/index.js";
 
 async function main() {
   const args = process.argv.slice(2);
@@ -9,6 +9,12 @@ async function main() {
   // Handle help command
   if (args.length === 0 || args.includes('-help') || args.includes('--help')) {
     showHelp();
+    process.exit(0);
+  }
+
+  // Handle version command
+  if (args.includes('-version') || args.includes('--version') || args.includes('-v') || args.includes('--v')) {
+    showVersion();
     process.exit(0);
   }
 
