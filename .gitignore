@@ -108,7 +108,6 @@ test/
 tests/
 __tests__/
 *.test.js
-*.test.ts
 *.spec.js
 *.spec.ts
 
